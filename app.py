@@ -4,7 +4,7 @@ import pandas as pd
 st.set_page_config(page_title="منتجات TP-Link", layout="wide")
 
 # رابط Google Sheets بصيغة CSV
-sheet_url = "https://docs.google.com/spreadsheets/d/15dYSSNVbKHoPtKIIPdPockpJm1hXUnBl-ZZG0C5RD70/pub?output=csv"
+sheet_url = "https://docs.google.com/spreadsheets/d/15dYSSNVbKHoPtKIIPdPockpJm1hXUnBl-ZZG0C5RD70/edit?gid=0#gid=0"
 
 @st.cache_data
 def load_data():
