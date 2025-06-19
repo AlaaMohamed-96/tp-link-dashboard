@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import requests
@@ -11,10 +12,10 @@ st.set_page_config(page_title="لوحة متابعة منتجات TP-Link", layo
 def load_data():
     sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRq97qApWyUNKF-ISWQcl_th6m9d5wx2RR82hZoOy2Wo7bRvmj-TyFG9D8nofbBnlHqLdPZULZIKE5D/pub?output=csv"
     response = requests.get(sheet_url)
-    data = StringIO(response.text)
-    df = pd.read_csv(data,encoding="utf-8-sig")
+    data = StringIO(response.content.decode("utf-8-sig"))  # ✅ إصلاح الترميز العربي
+    df = pd.read_csv(data)
 
-    # تحويل عمود السعر إلى أرقام
+    # تحويل عمود السعر إلى أرقام فقط
     if "السعر" in df.columns:
         df["السعر"] = pd.to_numeric(
             df["السعر"]
@@ -25,7 +26,7 @@ def load_data():
         )
     return df
 
-# العنوان الرئيسي
+# عنوان التطبيق
 st.title("📊 لوحة متابعة منتجات TP-Link")
 
 # تحميل البيانات
@@ -35,11 +36,11 @@ df = load_data()
 if df.empty:
     st.warning("⚠️ لا توجد بيانات متاحة حاليًا.")
 else:
-    # عرض البيانات الأصلية
+    # عرض جميع البيانات
     st.subheader("📋 جميع المنتجات")
     st.dataframe(df)
 
-    # فلاتر جانبية
+    # فلاتر تفاعلية
     st.sidebar.header("🔍 خيارات الفلترة")
 
     product_names = df["اسم المنتج"].dropna().unique()
@@ -48,7 +49,6 @@ else:
     selected_product = st.sidebar.selectbox("اختر منتجًا:", ["الكل"] + list(product_names))
     selected_seller = st.sidebar.selectbox("اختر التاجر:", ["الكل"] + list(sellers))
 
-    # تطبيق الفلاتر
     filtered_df = df.copy()
     if selected_product != "الكل":
         filtered_df = filtered_df[filtered_df["اسم المنتج"] == selected_product]
