@@ -9,8 +9,25 @@ sheet_url = "https://docs.google.com/spreadsheets/d/15dYSSNVbKHoPtKIIPdPockpJm1h
 @st.cache_data
 def load_data():
     df = pd.read_csv(sheet_url)
-    df["السعر"] = pd.to_numeric(df["السعر"].astype(str).str.replace(",", "").str.extract("(\\d+)", expand=False), errors="coerce")
-    return df.dropna(subset=["السعر"])
+
+    # طباعة الأعمدة
+    st.write("🧾 الأعمدة الموجودة:", df.columns.tolist())
+
+    # تنظيف عمود "السعر"
+    if "السعر" in df.columns:
+        # تحويل القيم النصية إلى أرقام، وتجاهل "غير متوفر"
+        df["السعر"] = (
+            df["السعر"]
+            .astype(str)
+            .str.replace(",", "", regex=False)
+            .str.extract(r"(\d+)", expand=False)
+        )
+        df["السعر"] = pd.to_numeric(df["السعر"], errors="coerce")
+        df = df.dropna(subset=["السعر"])
+    else:
+        st.error("❌ عمود 'السعر' غير موجود في البيانات")
+
+    return df
 
 df = load_data()
 
