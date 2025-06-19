@@ -12,7 +12,7 @@ def load_data():
     sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRq97qApWyUNKF-ISWQcl_th6m9d5wx2RR82hZoOy2Wo7bRvmj-TyFG9D8nofbBnlHqLdPZULZIKE5D/pub?output=csv"
     response = requests.get(sheet_url)
     data = StringIO(response.text)
-    df = pd.read_csv(data)
+    df = pd.read_csv(data,encoding="utf-8-sig")
 
     # تحويل عمود السعر إلى أرقام
     if "السعر" in df.columns:
